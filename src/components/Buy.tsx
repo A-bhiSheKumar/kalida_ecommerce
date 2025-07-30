@@ -87,10 +87,10 @@ const BuyPage: React.FC = () => {
           </div>
 
           {/* Description */}
-          <p className="text-sm text-brand-200/80 leading-relaxed">
+          {/* <p className="text-sm text-brand-200/80 leading-relaxed">
             {product.description ||
               "High-performance hardware tool designed for professional-grade tasks. Reliable and durable."}
-          </p>
+          </p> */}
 
           {/* Features */}
           <ul className="space-y-2 text-sm text-brand-200/90">
