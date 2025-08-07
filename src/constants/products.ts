@@ -1,4 +1,4 @@
-import type { Product } from "../types/category";
+import type { Product } from "../interface/newI";
 
 export const featured: Product[] = [
   {
