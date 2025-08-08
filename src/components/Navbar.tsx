@@ -1,6 +1,8 @@
-import React, { useMemo, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import React, { useEffect, useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Search, ShoppingCart, User, ChevronDown } from "lucide-react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import type { Category } from "../interface/newI";
 
 const navClass =
@@ -26,6 +28,31 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [q, setQ] = useState("");
   const cats = useMemo(() => categories ?? categoriesPreset, [categories]);
+  const [isLogin, setIsLogin] = useState<boolean>(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkLogin = () => {
+      const token = localStorage.getItem("access_token");
+      setIsLogin(!!token);
+    };
+
+    checkLogin(); // Initial check
+
+    window.addEventListener("storage", checkLogin);
+    return () => window.removeEventListener("storage", checkLogin);
+  }, []);
+
+  // const handleProfileClick = () => {
+  //   if (!isLogin) {
+  //     toast.info("Navigating to login...", { position: "top-center" });
+  //     setTimeout(() => {
+  //       navigate("/login");
+  //     }, 1000);
+  //   } else {
+  //     navigate("/account");
+  //   }
+  // };
 
   return (
     <header className="sticky top-0 z-50 border-b border-black/10 bg-white text-black">
@@ -34,7 +61,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex h-16 items-center justify-between">
           {/* Left — Logo */}
           <div className="flex items-center gap-3">
-            <Link to="/" className="flex items-center gap-2">
+            <Link to="/home" className="flex items-center gap-2">
               <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-zinc-700 to-zinc-900" />
               <span className="font-semibold tracking-wide text-black">
                 Kalida
@@ -73,11 +100,32 @@ export const Navbar: React.FC<NavbarProps> = ({
               <CategoriesMenu items={cats} />
             </div>
 
-            <NavLink to="/account" className={navClass} aria-label="Account">
+            {/* Profile Click */}
+            <button
+              onMouseEnter={() => {
+                if (!isLogin) {
+                  toast.info("We are navigating you to login page...", {
+                    position: "top-center",
+                    autoClose: 1000,
+                    hideProgressBar: true,
+                  });
+                  setTimeout(() => {
+                    navigate("/login");
+                  }, 3000);
+                }
+              }}
+              onClick={() => {
+                if (isLogin) {
+                  navigate("/account");
+                }
+              }}
+              className={navClass}
+              aria-label="Account"
+            >
               <User size={18} />
-            </NavLink>
+            </button>
 
-            <NavLink to="/cart" className={navClass} aria-label="Cart">
+            <Link to="/cart" className={navClass} aria-label="Cart">
               <div className="relative">
                 <ShoppingCart size={18} />
                 {cartCount > 0 && (
@@ -86,7 +134,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   </span>
                 )}
               </div>
-            </NavLink>
+            </Link>
           </div>
         </div>
 
@@ -106,6 +154,9 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Toast Container */}
+      <ToastContainer />
     </header>
   );
 };

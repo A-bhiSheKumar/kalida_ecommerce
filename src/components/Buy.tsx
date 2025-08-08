@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Star, ShoppingCart, CheckCircle } from "lucide-react";
 import type { Product } from "../interface/ProductInterface";
 
@@ -21,7 +21,8 @@ type ImageObj = {
 const BuyPage: React.FC = () => {
   const location = useLocation();
   const product: Product | undefined = location.state?.product;
-
+  const [isLogin, setIsLogin] = useState<boolean>(false);
+  const navigate = useNavigate();
   if (!product) {
     return (
       <div className="min-h-screen flex items-center justify-center text-black">
@@ -52,6 +53,24 @@ const BuyPage: React.FC = () => {
   const displayPrice =
     product.sale_price || product.current_price || product.price;
 
+  const handleLogin = () => {
+    if (!isLogin) {
+      navigate("/login");
+    }
+  };
+
+  useEffect(() => {
+    const checkLogin = () => {
+      const token = localStorage.getItem("access_token");
+      setIsLogin(!!token);
+    };
+
+    checkLogin(); // Initial check
+
+    window.addEventListener("storage", checkLogin);
+    return () => window.removeEventListener("storage", checkLogin);
+  }, []);
+
   return (
     <div className="min-h-screen bg-white text-black py-12 px-4 sm:px-6 lg:px-12">
       <div className="mx-auto max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
@@ -74,7 +93,7 @@ const BuyPage: React.FC = () => {
                 <button
                   key={idx}
                   onClick={() => {
-                    if (isMain) {
+                    if (isMain || isLogin) {
                       setSelectedImage(imgObj.image);
                     } else {
                       setShowPermissionModal(true);
@@ -88,10 +107,12 @@ const BuyPage: React.FC = () => {
                     src={imgObj.image}
                     alt={`Preview ${idx}`}
                     className={`h-full w-full object-cover ${
-                      !isMain ? "opacity-50 cursor-not-allowed" : ""
+                      !isMain && !isLogin ? "opacity-50 cursor-not-allowed" : ""
                     }`}
                   />
-                  {!isMain && (
+
+                  {/* Show Locked overlay only if NOT main AND NOT logged in */}
+                  {!isMain && !isLogin && (
                     <div className="absolute inset-0 flex items-center justify-center text-xs text-white font-semibold bg-black/50 rounded-xl">
                       Locked
                     </div>
@@ -174,14 +195,19 @@ const BuyPage: React.FC = () => {
       {showPermissionModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
           <div className="bg-white text-black p-6 rounded-xl shadow-lg max-w-sm w-full text-center space-y-4">
-            <h2 className="text-lg font-semibold">Permission Required</h2>
+            <h2 className="text-lg font-semibold">Login Required</h2>
             <p className="text-sm text-gray-700">
-              This image is locked. Please contact support or upgrade your
-              access to view this content.
+              This image is locked. Please Login to access this content.
             </p>
             <div className="mt-4 flex justify-center gap-4">
               <button
-                className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800"
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-800"
+                onClick={handleLogin}
+              >
+                Login
+              </button>
+              <button
+                className="px-4 py-2 bg-white border text-black rounded-lg hover:bg-black hover:text-white"
                 onClick={() => setShowPermissionModal(false)}
               >
                 Close
