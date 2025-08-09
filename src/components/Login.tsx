@@ -34,7 +34,7 @@ const LoginForm = () => {
         if (response.role === "ADMIN") {
           window.location.href = "https://ecommerce-freelance-new.vercel.app/";
         } else {
-          navigate("/home");
+          navigate("/");
         }
       } else {
         toast.error("Invalid credentials");
@@ -80,7 +80,7 @@ const LoginForm = () => {
   useEffect(() => {
     const token = localStorage.getItem("access_token");
     if (token) {
-      navigate("/home");
+      navigate("/");
     }
   }, []);
 

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Star, ShoppingCart, CheckCircle } from "lucide-react";
 import type { Product } from "../interface/ProductInterface";
+import { api } from "../utils/api";
 
 // Helper to format INR
 const priceINR = (v: number | string) =>
@@ -23,6 +24,10 @@ const BuyPage: React.FC = () => {
   const product: Product | undefined = location.state?.product;
   const [isLogin, setIsLogin] = useState<boolean>(false);
   const navigate = useNavigate();
+  const { search } = useLocation();
+  const params = new URLSearchParams(search);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const productId = params.get("product_id");
   if (!product) {
     return (
       <div className="min-h-screen flex items-center justify-center text-black">
@@ -70,6 +75,63 @@ const BuyPage: React.FC = () => {
     window.addEventListener("storage", checkLogin);
     return () => window.removeEventListener("storage", checkLogin);
   }, []);
+
+  const handleDownload = async () => {
+    if (!productId) {
+      console.error("No product ID found");
+      return;
+    }
+
+    try {
+      const blobData = await api.product.downloadProductPdf(productId);
+
+      console.log("Clgblogpdf-->>");
+      const blob = new Blob([blobData], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${product?.name || "product"}.pdf`;
+      a.target = "_blank";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error downloading PDF:", error);
+    }
+  };
+
+  const handleAddToCart = async () => {
+    if (!productId) {
+      console.error("No product ID found");
+      return;
+    }
+
+    setIsAddingToCart(true); // Disable immediately
+
+    const payload = {
+      product: Number(productId),
+      quantity: 1,
+    };
+
+    try {
+      // Add to cart
+      await api.product.addToCart(payload);
+
+      // Fetch updated cart items
+      const cartData = await api.product.getCartIems();
+      console.log("Cart updated:", cartData);
+
+      // Dispatch event so Navbar updates instantly
+      window.dispatchEvent(new Event("cart-updated"));
+
+      alert("Product added to cart successfully!");
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      setIsAddingToCart(false); // Re-enable on error
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white text-black py-12 px-4 sm:px-6 lg:px-12">
@@ -173,13 +235,41 @@ const BuyPage: React.FC = () => {
 
           {/* Actions */}
           <div className="mt-6 flex flex-wrap items-center gap-4">
-            <button className="inline-flex items-center gap-2 rounded-xl bg-gray-900 px-6 py-2.5 text-sm font-semibold text-white hover:bg-gray-800 transition shadow-md">
+            <button
+              disabled={isAddingToCart}
+              className={`inline-flex items-center gap-2 rounded-xl px-6 py-2.5 text-sm font-semibold transition shadow-md ${
+                isAddingToCart
+                  ? "bg-gray-400 text-gray-200 cursor-not-allowed"
+                  : "bg-gray-900 text-white hover:bg-gray-800"
+              }`}
+              onClick={handleAddToCart}
+            >
               <ShoppingCart size={18} />
-              Add to Cart
+              {isAddingToCart ? "Added" : "Add to Cart"}
             </button>
-            <button className="rounded-xl bg-white text-black border border-black px-6 py-2.5 text-sm font-semibold hover:bg-gray-100 transition shadow-md">
-              Buy Now
-            </button>
+
+            {isLogin && (
+              <button
+                className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white px-6 py-2.5 text-sm font-semibold shadow-lg hover:from-purple-600 hover:via-pink-600 hover:to-red-600 active:scale-95 transition-all duration-300"
+                onClick={handleDownload}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5m0 0l5-5m-5 5V4"
+                  />
+                </svg>
+                Download
+              </button>
+            )}
           </div>
 
           {/* Delivery & Policies */}

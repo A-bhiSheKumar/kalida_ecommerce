@@ -12,3 +12,7 @@ export const headers = {
   "Content-Type": "application/json",
   "X-CSRFToken": csrftoken,
 };
+
+export const customPdfHeaders = {
+  Accept: "application/pdf",
+};

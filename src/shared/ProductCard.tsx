@@ -31,7 +31,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
     <div className="group perspective-1000 w-full h-full">
       <div className="relative preserve-3d group-hover:rotate-y-10 transition-all duration-500 ease-in-out w-full h-full">
         <Link
-          to={`/product/${product.id}`}
+          to={`/productDetails?product_id=${product.id}`}
           state={{ product }} // ✅ Pass full product object
           className="bg-white text-black rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 p-4 flex flex-col gap-3 h-full border border-gray-100"
           aria-label={`View ${product.name} product details`}

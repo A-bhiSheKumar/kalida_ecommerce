@@ -29,7 +29,7 @@ const UserProfile = () => {
               localStorage.removeItem("access_token");
               localStorage.removeItem("refresh_token");
               toast.dismiss();
-              navigate("/home");
+              navigate("/");
             }}
             className="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700"
           >

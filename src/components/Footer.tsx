@@ -21,7 +21,7 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
           {/* Brand */}
           <div className="lg:col-span-4">
-            <Link to="/home" className="inline-flex items-center gap-3">
+            <Link to="/" className="inline-flex items-center gap-3">
               <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-neutral-800 to-neutral-500 ring-1 ring-neutral-300/50" />
               <span className="text-xl font-semibold tracking-wide text-black">
                 Kalida

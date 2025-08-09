@@ -14,6 +14,7 @@ import CategoryProduct from "./components/CategoryProduct";
 import BuyPage from "./components/Buy";
 import LoginForm from "./components/Login";
 import UserProfile from "./components/UserProfile";
+import AddToCart from "./components/AddToCart";
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -26,7 +27,7 @@ const App: React.FC = () => {
 
   return (
     <div className="flex min-h-screen flex-col">
-      {!hideNavFooter && <Navbar cartCount={2} />}
+      {!hideNavFooter && <Navbar />}
 
       <main className="flex-1">
         <Routes>
@@ -34,14 +35,15 @@ const App: React.FC = () => {
           <Route
             path="/login"
             element={
-              isAuthenticated ? <Navigate to="/home" replace /> : <LoginForm />
+              isAuthenticated ? <Navigate to="/" replace /> : <LoginForm />
             }
           />
 
-          <Route path="/home" element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path="/account" element={<UserProfile />} />
           <Route path="/product" element={<CategoryProduct />} />
-          <Route path="/product/:id" element={<BuyPage />} />
+          <Route path="/productDetails" element={<BuyPage />} />
+          <Route path="/addToCart" element={<AddToCart />} />
         </Routes>
       </main>
 
