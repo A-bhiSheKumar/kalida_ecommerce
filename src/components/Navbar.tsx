@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Search, ShoppingCart, User } from "lucide-react";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import type { Category } from "../interface/newI";
 import { api } from "../utils/api";
@@ -21,7 +21,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
 
   const fetchCartItems = useCallback(async () => {
     try {
-      const response = await api.product.getCartIems(); // API call
+      const response = await api.product.getCartIems();
       setCartCount(response.total_items || 0);
     } catch (err) {
       console.error("Error fetching cart items:", err);
@@ -85,25 +85,24 @@ export const Navbar: React.FC<NavbarProps> = () => {
           </div>
 
           {/* Right Actions */}
-          <div className="flex items-center gap-1">
-            {/* Profile */}
-            <button
-              onMouseEnter={() => {
-                if (!isLogin) {
-                  toast.info("We are navigating you to login page...", {
-                    position: "top-center",
-                    autoClose: 1000,
-                    hideProgressBar: true,
-                  });
-                  setTimeout(() => navigate("/login"), 3000);
-                }
-              }}
-              onClick={() => isLogin && navigate("/account")}
-              className={navClass}
-              aria-label="Account"
-            >
-              <User size={18} />
-            </button>
+          <div className="flex items-center gap-2">
+            {/* Profile / Login */}
+            {!isLogin ? (
+              <button
+                onClick={() => navigate("/login")}
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
+              >
+                Login
+              </button>
+            ) : (
+              <button
+                onClick={() => navigate("/account")}
+                className={navClass}
+                aria-label="Account"
+              >
+                <User size={18} />
+              </button>
+            )}
 
             {/* Cart */}
             <Link to="/addToCart" className={navClass} aria-label="Cart">

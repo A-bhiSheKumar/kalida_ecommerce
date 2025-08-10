@@ -30,6 +30,7 @@ const UserProfile = () => {
               localStorage.removeItem("refresh_token");
               toast.dismiss();
               navigate("/");
+              window.location.reload();
             }}
             className="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700"
           >

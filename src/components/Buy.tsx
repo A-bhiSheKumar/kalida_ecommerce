@@ -236,16 +236,29 @@ const BuyPage: React.FC = () => {
           {/* Actions */}
           <div className="mt-6 flex flex-wrap items-center gap-4">
             <button
-              disabled={isAddingToCart}
+              disabled={!isLogin || isAddingToCart}
+              title={!isLogin ? "Login to add the product" : ""}
               className={`inline-flex items-center gap-2 rounded-xl px-6 py-2.5 text-sm font-semibold transition shadow-md ${
-                isAddingToCart
+                !isLogin
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : isAddingToCart
                   ? "bg-gray-400 text-gray-200 cursor-not-allowed"
                   : "bg-gray-900 text-white hover:bg-gray-800"
               }`}
-              onClick={handleAddToCart}
+              onClick={() => {
+                if (!isLogin) {
+                  handleLogin();
+                  return;
+                }
+                handleAddToCart();
+              }}
             >
               <ShoppingCart size={18} />
-              {isAddingToCart ? "Added" : "Add to Cart"}
+              {!isLogin
+                ? "Add to Cart"
+                : isAddingToCart
+                ? "Added"
+                : "Add to Cart"}
             </button>
 
             {isLogin && (
