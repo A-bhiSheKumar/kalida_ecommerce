@@ -94,32 +94,48 @@ const Home: React.FC = () => {
             </Link>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            {categories.length > 0 ? (
-              categories.map((c) => (
-                <Link
-                  key={c.id}
-                  to={`/product?category=${encodeURIComponent(
-                    c.id
-                  )}&categoryName=${encodeURIComponent(c.name)}`}
-                  className="group relative overflow-hidden rounded-2xl border border-black/10 bg-black/5"
-                >
-                  <img
-                    src={c.image}
-                    alt={c.name}
-                    className="h-28 w-full object-cover transition-transform duration-300 group-hover:scale-[1.05]"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-b from-white/0 to-black/20" />
-                  <div className="absolute bottom-2 left-2 text-sm font-medium text-white drop-shadow">
-                    {c.name}
+          <div className="px-4 sm:px-6 lg:px-8 py-8">
+            <div className="max-w-7xl mx-auto">
+              {categories.length > 0 ? (
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
+                  {categories.map((c) => (
+                    <Link
+                      key={c.id}
+                      to={`/product?category=${encodeURIComponent(
+                        c.id
+                      )}&categoryName=${encodeURIComponent(c.name)}`}
+                      className="group relative block overflow-hidden rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow duration-300"
+                      aria-label={`Browse ${c.name} category`}
+                    >
+                      <div className="aspect-square overflow-hidden">
+                        <img
+                          src={c.image}
+                          alt={c.name}
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent" />
+                      <div className="absolute bottom-0 left-0 right-0 p-4">
+                        <h3 className="text-lg font-semibold text-white text-center">
+                          {c.name}
+                        </h3>
+                        <span className="block mt-1 text-sm text-white/90 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          Shop now →
+                        </span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex justify-center items-center py-12">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-400 mx-auto mb-4"></div>
+                    <p className="text-gray-600">Loading categories...</p>
                   </div>
-                </Link>
-              ))
-            ) : (
-              <p className="text-sm text-neutral-600 col-span-full">
-                Loading categories...
-              </p>
-            )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </section>
