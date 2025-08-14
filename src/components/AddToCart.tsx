@@ -133,18 +133,44 @@ const AddToCart = () => {
       setIsSending(false);
     }
   };
+  const syncGuestCartToServer = async () => {
+    const token = localStorage.getItem("access_token");
+    if (!token) return;
+
+    const guestCart = JSON.parse(localStorage.getItem("guest_cart") || "[]");
+    if (guestCart.length === 0) return;
+
+    try {
+      for (const item of guestCart) {
+        await api.product.addToCart({
+          product: item.id,
+          quantity: item.quantity || 1,
+        });
+      }
+      localStorage.removeItem("guest_cart");
+      window.dispatchEvent(new Event("cart-updated"));
+    } catch (err) {
+      console.error("Error syncing guest cart:", err);
+    }
+  };
 
   useEffect(() => {
-    const checkLogin = () => {
+    const checkLoginAndSync = async () => {
       const token = localStorage.getItem("access_token");
+      const wasGuest = localStorage.getItem("guest_cart");
+
+      if (token && wasGuest) {
+        await syncGuestCartToServer();
+        fetchCart(); // reload cart from server
+      }
       setIsLogin(!!token);
     };
 
-    checkLogin(); // Initial check
-
-    window.addEventListener("storage", checkLogin);
-    return () => window.removeEventListener("storage", checkLogin);
+    checkLoginAndSync(); // initial check
+    window.addEventListener("storage", checkLoginAndSync);
+    return () => window.removeEventListener("storage", checkLoginAndSync);
   }, []);
+
   useEffect(() => {
     fetchCart();
   }, []);

@@ -32,7 +32,8 @@ const LoginForm = () => {
         localStorage.setItem("email", response.email);
 
         if (response.role === "ADMIN") {
-          window.location.href = "https://ecommerce-freelance-new.vercel.app/";
+          alert("No user found ! Please check the credentials");
+          return;
         } else {
           navigate("/");
         }
@@ -86,74 +87,74 @@ const LoginForm = () => {
 
   return (
     <div className="min-h-screen flex">
-      {/* Left side - Info Panel */}
-      <div className="w-1/2 hidden md:flex items-center justify-center relative p-2 bg-gradient-to-b from-[#0f1125] to-[#0f1a4d]">
+      {/* Left side */}
+      <div className="w-1/2 hidden md:flex items-center justify-center relative p-2 bg-white">
         <div className="relative w-full h-full rounded-3xl overflow-hidden shadow-lg">
           <img
-            src="https://images.unsplash.com/photo-1581084243124-209fc8f93cf6?q=80&w=1287"
+            src="https://images.unsplash.com/photo-1668874184010-87aa286683dd?q=80&w=1287&auto=format&fit=crop"
             alt="Background"
             className="absolute inset-0 w-full h-full object-cover"
           />
-          <div className="relative z-10 text-white text-center px-8 py-10 backdrop-brightness-75">
+          <div className="relative z-10 text-black text-center px-8 py-10 backdrop-brightness-95 bg-white/60">
             <h1 className="text-3xl font-semibold">Our Organisation</h1>
             <p className="text-xl mt-2">Anything you can Imagine</p>
-            <p className="text-sm mt-1 opacity-75">
+            <p className="text-sm mt-1 text-gray-700">
               Generate any type of art with Openartistic
             </p>
           </div>
         </div>
       </div>
 
-      {/* Right side - Form */}
-      <div className="w-full md:w-1/2 bg-gradient-to-b from-[#0f1125] to-[#0f1a4d] flex items-center justify-center px-6">
-        <div className="w-full max-w-md space-y-6">
+      {/* Right side */}
+      <div className="w-full md:w-1/2 bg-white flex items-center justify-center px-6">
+        <div className="w-full max-w-md space-y-6 bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
           <div>
-            <p className="text-sm text-white text-opacity-60">
+            <p className="text-sm text-gray-600">
               {isSignup ? "New to Organization?" : "Login your account"}
             </p>
-            <h2 className="text-3xl font-bold text-white">
+            <h2 className="text-3xl font-bold text-black">
               {isSignup ? "Create Account" : "Welcome Back!"}
             </h2>
-            <p className="text-white text-opacity-70 mt-1">
+            <p className="text-gray-600 mt-1">
               {isSignup
                 ? "Please fill the form to create an account"
                 : "Enter your username and password"}
             </p>
           </div>
 
-          {/* Form */}
+          {/* Inputs */}
           <div className="space-y-4">
             <div>
-              <label className="block text-white text-sm mb-1">Username</label>
+              <label className="block text-black text-sm mb-1">Username</label>
               <input
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="input-style"
+                className="w-full border border-black rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black shadow-sm"
                 placeholder="Enter username or Email"
               />
             </div>
 
             {isSignup && (
               <div>
-                <label className="block text-white text-sm mb-1">Email</label>
+                <label className="block text-black text-sm mb-1">Email</label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="input-style"
+                  className="w-full border border-black rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black shadow-sm"
                   placeholder="Enter email"
                 />
               </div>
             )}
 
             <div>
-              <label className="block text-white text-sm mb-1">Password</label>
+              <label className="block text-black text-sm mb-1">Password</label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="input-style"
+                className="w-full border border-black rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black shadow-sm"
                 placeholder="Enter your password"
               />
             </div>
@@ -161,55 +162,53 @@ const LoginForm = () => {
             {isSignup && (
               <>
                 <div>
-                  <label className="block text-white text-sm mb-1">
+                  <label className="block text-black text-sm mb-1">
                     Phone Number
                   </label>
                   <input
                     type="text"
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
-                    className="input-style"
+                    className="w-full border border-black rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black shadow-sm"
                     placeholder="Enter phone number"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-white text-sm mb-1">
+                  <label className="block text-black text-sm mb-1">
                     Address
                   </label>
                   <input
                     type="text"
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
-                    className="input-style"
+                    className="w-full border border-black rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black shadow-sm"
                     placeholder="Enter address"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-white text-sm mb-1">
+                  <label className="block text-black text-sm mb-1">
                     Company Name
                   </label>
                   <input
                     type="text"
                     value={companyName}
                     onChange={(e) => setCompanyName(e.target.value)}
-                    className="input-style"
+                    className="w-full border border-black rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black shadow-sm"
                     placeholder="Enter company name"
                   />
                 </div>
               </>
             )}
 
-            {!isSignup && <div className="text-right"></div>}
-
             <button
               onClick={isSignup ? handleSignup : handleLogin}
-              className="w-full py-3 rounded-md bg-gradient-to-r from-[#202020] to-black text-white font-semibold hover:opacity-90 transition flex items-center justify-center"
+              className="w-full py-3 rounded-md bg-gradient-to-r from-black to-gray-800 text-white font-semibold hover:opacity-90 transition flex justify-center items-center"
               disabled={loading}
             >
               {loading ? (
-                <span className="loader w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
               ) : isSignup ? (
                 "Sign up"
               ) : (
@@ -217,11 +216,11 @@ const LoginForm = () => {
               )}
             </button>
 
-            <p className="text-sm text-white text-opacity-60 text-center">
+            <p className="text-sm text-gray-600 text-center">
               {isSignup ? "Already have an account?" : "New to Organization?"}{" "}
               <span
                 onClick={() => setIsSignup(!isSignup)}
-                className="text-blue-400 hover:underline cursor-pointer"
+                className="text-black hover:underline cursor-pointer"
               >
                 {isSignup ? "Login" : "Sign up"}
               </span>
