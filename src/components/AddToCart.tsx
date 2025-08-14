@@ -2,15 +2,19 @@ import { useEffect, useState } from "react";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { api } from "../utils/api";
 import QuotationModel from "../shared/QuotationModel";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const AddToCart = () => {
   const [cartItems, setCartItems] = useState<any[]>([]);
   const [subtotal, setSubtotal] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLogin, setIsLogin] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [quotationData, setQuotationData] = useState<any>(null);
   const [isSending, setIsSending] = useState(false);
   const [total, setTotal] = useState(0);
+  const navigate = useNavigate();
   const fetchCart = async () => {
     setIsLoading(true);
     try {
@@ -88,6 +92,18 @@ const AddToCart = () => {
       setIsSending(false);
     }
   };
+
+  useEffect(() => {
+    const checkLogin = () => {
+      const token = localStorage.getItem("access_token");
+      setIsLogin(!!token);
+    };
+
+    checkLogin(); // Initial check
+
+    window.addEventListener("storage", checkLogin);
+    return () => window.removeEventListener("storage", checkLogin);
+  }, []);
   useEffect(() => {
     fetchCart();
   }, []);
@@ -228,7 +244,17 @@ const AddToCart = () => {
                       ? "opacity-70 cursor-not-allowed"
                       : "hover:bg-gray-800"
                   }`}
-                  onClick={handleSendQuotation}
+                  onClick={() => {
+                    if (!isLogin) {
+                      toast.info("Login is required to send quotation", {
+                        position: "top-center",
+                        autoClose: 1500,
+                      });
+                      setTimeout(() => navigate("/login"), 1500);
+                      return;
+                    }
+                    handleSendQuotation();
+                  }}
                   disabled={isSending}
                 >
                   {isSending ? (
