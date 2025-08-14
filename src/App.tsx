@@ -15,9 +15,30 @@ import BuyPage from "./components/Buy";
 import LoginForm from "./components/Login";
 import UserProfile from "./components/UserProfile";
 import AddToCart from "./components/AddToCart";
+import { api } from "./utils/api";
 
 const App: React.FC = () => {
   const location = useLocation();
+
+  const fetchUser = async () => {
+    try {
+      const response = await api.auth.fetchLoginUser();
+
+      if (response?.status === "success" && response.data) {
+        const userData = response.data;
+
+        localStorage.setItem("username", userData.username || "");
+        localStorage.setItem("email", userData.email || "");
+        localStorage.setItem("role", userData.role || "");
+        localStorage.setItem("phone_number", userData.phone_number || "");
+        localStorage.setItem("company_name", userData.company_name || "");
+        localStorage.setItem("address", userData.address || "");
+        localStorage.setItem("user_id", String(userData.id || ""));
+      }
+    } catch (error) {
+      console.error("Failed to fetch user data:", error);
+    }
+  };
 
   // Check for token in query params when app loads or location changes
   useEffect(() => {
@@ -25,13 +46,8 @@ const App: React.FC = () => {
     const token = searchParams.get("token");
 
     if (token) {
-      // Save token to localStorage
       localStorage.setItem("access_token", token);
-
-      // Optionally trigger any login fetch to get user data here
-      // api.auth.getProfile().then(...)
-
-      // Remove token from URL without reloading
+      fetchUser();
       const newUrl = window.location.pathname + window.location.hash;
       window.history.replaceState({}, document.title, newUrl);
     }

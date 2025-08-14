@@ -1,4 +1,4 @@
-import { login } from "./auth/login";
+import { fetchLoginUser, login } from "./auth/login";
 import { register } from "./auth/register";
 
 import { getCategoryList } from "./categories/getCategory";
@@ -14,6 +14,7 @@ export const api = {
   auth: {
     login: login,
     register: register,
+    fetchLoginUser: fetchLoginUser,
   },
   categories: {
     getCategoryList: getCategoryList,

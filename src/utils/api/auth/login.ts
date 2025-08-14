@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { headers } from "../../../config/config";
+import { AUTHORIZATION } from "../../../constants/api/auth";
 import { request } from "../api";
 
-const { post } = request;
+const { post, get } = request;
 
 const initialRoute = "auth";
 
@@ -24,6 +25,27 @@ export const login = async (_payload: any) => {
     throw new Error(`Login failed with status: ${response?.status}`);
   } catch (error: any) {
     console.error("Login error:", error);
+    throw error;
+  }
+};
+
+export const fetchLoginUser = async () => {
+  try {
+    const endpoint = `${initialRoute}/user-details/`;
+
+    const token = localStorage.getItem("access_token");
+    const response = await get(endpoint, {
+      ...headers,
+      [AUTHORIZATION.Authorization]: `${AUTHORIZATION.Bearer} ${token}`,
+    });
+
+    if (response?.status === 200) {
+      return response.data;
+    }
+
+    throw new Error("Failed to fetch product list");
+  } catch (error: unknown) {
+    console.error("API error:", error);
     throw error;
   }
 };
