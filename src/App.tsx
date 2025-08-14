@@ -1,5 +1,5 @@
 // src/App.tsx
-import React from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter,
   Route,
@@ -19,10 +19,25 @@ import AddToCart from "./components/AddToCart";
 const App: React.FC = () => {
   const location = useLocation();
 
-  // Simulating authentication state (replace with your AuthContext or real logic)
-  const isAuthenticated = !!localStorage.getItem("access_token");
+  // Check for token in query params when app loads or location changes
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const token = searchParams.get("token");
 
-  // Hide Navbar & Footer on login page
+    if (token) {
+      // Save token to localStorage
+      localStorage.setItem("access_token", token);
+
+      // Optionally trigger any login fetch to get user data here
+      // api.auth.getProfile().then(...)
+
+      // Remove token from URL without reloading
+      const newUrl = window.location.pathname + window.location.hash;
+      window.history.replaceState({}, document.title, newUrl);
+    }
+  }, [location]);
+
+  const isAuthenticated = !!localStorage.getItem("access_token");
   const hideNavFooter = location.pathname === "/login";
 
   return (
@@ -31,14 +46,12 @@ const App: React.FC = () => {
 
       <main className="flex-1">
         <Routes>
-          {/* Redirect if already logged in */}
           <Route
             path="/login"
             element={
               isAuthenticated ? <Navigate to="/" replace /> : <LoginForm />
             }
           />
-
           <Route path="/" element={<Home />} />
           <Route path="/account" element={<UserProfile />} />
           <Route path="/product" element={<CategoryProduct />} />
@@ -52,7 +65,6 @@ const App: React.FC = () => {
   );
 };
 
-// Wrapping with BrowserRouter here so useLocation works
 const AppWrapper: React.FC = () => (
   <BrowserRouter>
     <App />
