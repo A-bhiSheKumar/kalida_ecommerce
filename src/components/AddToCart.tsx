@@ -15,11 +15,34 @@ const AddToCart = () => {
   const [isSending, setIsSending] = useState(false);
   const [total, setTotal] = useState(0);
   const navigate = useNavigate();
+
   const fetchCart = async () => {
     setIsLoading(true);
     try {
-      const response = await api.product.getCartIems();
+      const token = localStorage.getItem("access_token");
 
+      if (!token) {
+        // Guest cart from localStorage
+        const guestCart = JSON.parse(
+          localStorage.getItem("guest_cart") || "[]"
+        );
+
+        const formattedItems = guestCart.map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          price: parseFloat(item.price || 0),
+          image: item.image || item.images?.[0]?.image || "",
+          quantity: item.quantity || 1,
+        }));
+
+        setCartItems(formattedItems);
+        calculateTotals(formattedItems);
+        window.dispatchEvent(new Event("cart-updated"));
+        return;
+      }
+
+      // Logged-in user cart from API
+      const response = await api.product.getCartIems();
       const formattedItems = (response.items || []).map((item: any) => ({
         id: item.id,
         name: item.product_name,
@@ -48,15 +71,33 @@ const AddToCart = () => {
   };
 
   const updateQuantity = async (id: number, change: number) => {
+    const token = localStorage.getItem("access_token");
+
+    if (!token) {
+      // Guest cart update
+      const cart = JSON.parse(localStorage.getItem("guest_cart") || "[]");
+      const itemIndex = cart.findIndex((item: any) => item.id === id);
+      if (itemIndex >= 0) {
+        cart[itemIndex].quantity = Math.max(
+          1,
+          cart[itemIndex].quantity + change
+        );
+      }
+      localStorage.setItem("guest_cart", JSON.stringify(cart));
+      setCartItems(cart);
+      calculateTotals(cart);
+      window.dispatchEvent(new Event("cart-updated"));
+      return;
+    }
+
+    // Logged-in update via API
     const currentItem = cartItems.find((item) => item.id === id);
     if (!currentItem) return;
 
     const newQuantity = Math.max(1, currentItem.quantity + change);
-
     const response = await api.product.updateCartQuantity(id, {
-      quantity: newQuantity, // send final quantity, not just +1/-1
+      quantity: newQuantity,
     });
-
     if (response) {
       const updatedItems = cartItems.map((item) =>
         item.id === id ? { ...item, quantity: newQuantity } : item

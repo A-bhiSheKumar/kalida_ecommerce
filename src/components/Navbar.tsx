@@ -21,6 +21,21 @@ export const Navbar: React.FC<NavbarProps> = () => {
 
   const fetchCartItems = useCallback(async () => {
     try {
+      const token = localStorage.getItem("access_token");
+      if (!token) {
+        // Guest cart count from localStorage
+        const guestCart = JSON.parse(
+          localStorage.getItem("guest_cart") || "[]"
+        );
+        setCartCount(
+          guestCart.reduce(
+            (total: number, item: any) => total + (item.quantity || 1),
+            0
+          )
+        );
+        return;
+      }
+      // Logged-in cart from API
       const response = await api.product.getCartIems();
       setCartCount(response.total_items || 0);
     } catch (err) {

@@ -103,33 +103,61 @@ const BuyPage: React.FC = () => {
   };
 
   const handleAddToCart = async () => {
-    if (!productId) {
+    if (!product?.id) {
       console.error("No product ID found");
       return;
     }
 
-    setIsAddingToCart(true); // Disable immediately
-
+    setIsAddingToCart(true); // Disable button immediately
     const payload = {
-      product: Number(productId),
+      product: Number(product.id),
       quantity: 1,
     };
 
+    const token = localStorage.getItem("access_token");
+
+    // If not logged in → save to guest cart in localStorage
+    if (!token) {
+      try {
+        const cart = JSON.parse(localStorage.getItem("guest_cart") || "[]");
+
+        const existingIndex = cart.findIndex(
+          (item: any) => item.id === product.id
+        );
+        if (existingIndex >= 0) {
+          cart[existingIndex].quantity += 1;
+        } else {
+          cart.push({ ...product, quantity: 1 });
+        }
+
+        localStorage.setItem("guest_cart", JSON.stringify(cart));
+
+        // Trigger navbar/cart icon update
+        window.dispatchEvent(new Event("cart-updated"));
+
+        alert("Product added to cart successfully!");
+      } catch (error) {
+        console.error("Error saving to guest cart:", error);
+      } finally {
+        setIsAddingToCart(false);
+      }
+      return; // Exit here — no API call for guests
+    }
+
+    // If logged in → use API
     try {
-      // Add to cart
       await api.product.addToCart(payload);
 
-      // Fetch updated cart items
       const cartData = await api.product.getCartIems();
       console.log("Cart updated:", cartData);
 
-      // Dispatch event so Navbar updates instantly
       window.dispatchEvent(new Event("cart-updated"));
 
       alert("Product added to cart successfully!");
     } catch (error) {
       console.error("Error adding to cart:", error);
-      setIsAddingToCart(false); // Re-enable on error
+    } finally {
+      setIsAddingToCart(false);
     }
   };
 
