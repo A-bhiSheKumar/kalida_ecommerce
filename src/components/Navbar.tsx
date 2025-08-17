@@ -37,6 +37,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
       }
       // Logged-in cart from API
       const response = await api.product.getCartIems();
+      console.log("Responsecheckfortheitemscart-->", response);
       setCartCount(response.total_items || 0);
     } catch (err) {
       console.error("Error fetching cart items:", err);

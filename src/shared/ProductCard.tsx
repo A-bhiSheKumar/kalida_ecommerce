@@ -100,7 +100,9 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
             <h3 className="text-sm font-semibold leading-tight line-clamp-2 min-h-[2.5rem]">
               {product.name}
             </h3>
-
+            <p className="text-xs text-gray-600 leading-snug line-clamp-2">
+              {product.description}
+            </p>
             {/* Rating */}
             {product.rating && (
               <div className="flex items-center gap-1 text-sm">

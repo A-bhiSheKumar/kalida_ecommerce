@@ -8,6 +8,7 @@ import { api } from "../utils/api";
 interface Category {
   id: string;
   name: string;
+  description: string;
   image: string;
 }
 
@@ -18,6 +19,7 @@ const Home: React.FC = () => {
   const fetchCategories = useCallback(async () => {
     try {
       const response = await api.categories.getCategoryList();
+      console.log("responsecheckforthisdesc-->>", response);
       if (response) {
         setCategories(response);
       }
