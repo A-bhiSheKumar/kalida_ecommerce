@@ -30,6 +30,7 @@ const AddToCart = () => {
         const formattedItems = guestCart.map((item: any) => ({
           id: item.id,
           name: item.name,
+          description: item.description,
           price: parseFloat(item.price || 0),
           image: item.image || item.images?.[0]?.image || "",
           quantity: item.quantity || 1,
@@ -47,6 +48,7 @@ const AddToCart = () => {
         id: item.id,
         name: item.product_name,
         price: parseFloat(item.product_price),
+        description: item.description,
         image: item.product_image,
         quantity: item.quantity,
       }));
@@ -228,6 +230,9 @@ const AddToCart = () => {
                           <h2 className="text-lg font-semibold text-gray-900">
                             {item.name}
                           </h2>
+                          <p className="text-xs text-gray-600 leading-snug line-clamp-2">
+                            {item.description}
+                          </p>
                           {item.size && (
                             <p className="mt-2 text-sm text-gray-500">
                               Size:{" "}

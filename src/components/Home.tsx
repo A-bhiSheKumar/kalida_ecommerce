@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../utils/api";
+import WhoWeAre from "./WhoWeAre";
+import OurPartners from "./OurPartners";
 // import { featured } from "../constants/products";
 // import ProductCard from "../shared/ProductCard";
 
@@ -40,10 +42,12 @@ const Home: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-black/5 px-3 py-1 text-xs text-neutral-600">
-                Built for Pros • Ships PAN India
+                Premium materials, exceptional service, professionalism — now on
+                LinkedIn.
               </div>
               <h1 className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight">
-                Industrial-grade tools for people who build the future.
+                Welcome to Kalida - Exclusive Distributor of High-End
+                Construction Materials!
               </h1>
               <p className="mt-3 text-neutral-600">
                 From power tools to fasteners — curated for performance,
@@ -73,7 +77,7 @@ const Home: React.FC = () => {
             <div className="relative">
               <div className="aspect-[16/10] w-full overflow-hidden rounded-3xl border border-black/10 bg-black/5 shadow-2xl">
                 <img
-                  src="https://images.unsplash.com/photo-1580893195730-1282f408b0d9?q=80&w=1287&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=2352&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                   alt="Hero"
                   className="h-full w-full object-cover"
                 />
@@ -86,6 +90,7 @@ const Home: React.FC = () => {
         </div>
       </section>
 
+      <WhoWeAre />
       {/* Categories */}
       <section className="border-t border-black/10 bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
@@ -109,14 +114,21 @@ const Home: React.FC = () => {
                       className="group relative block overflow-hidden rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow duration-300"
                       aria-label={`Browse ${c.name} category`}
                     >
-                      <div className="aspect-square overflow-hidden">
-                        <img
-                          src={c.image}
-                          alt={c.name}
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                          loading="lazy"
-                        />
+                      <div className="aspect-square overflow-hidden flex items-center justify-center bg-gray-100">
+                        {c.image ? (
+                          <img
+                            src={c.image}
+                            alt={c.name}
+                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <span className="text-3xl font-bold text-gray-600">
+                            {c.name.charAt(0).toUpperCase()}
+                          </span>
+                        )}
                       </div>
+
                       <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent" />
                       <div className="absolute bottom-0 left-0 right-0 p-4">
                         <h3 className="text-lg font-semibold text-white text-center">
@@ -142,46 +154,7 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* <section className="border-t border-black/10 bg-white">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
-          <div className="mb-6 flex items-end justify-between">
-            <h2 className="text-xl font-semibold">Featured</h2>
-            <Link
-              to="/featured"
-              className="text-sm text-neutral-600 hover:underline"
-            >
-              View all
-            </Link>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {featured.map((p) => (
-              <ProductCard key={p.id} product={p} />
-            ))}
-          </div>
-        </div>
-      </section> */}
-
-      {/* Value Props */}
-      <section className="border-t border-black/10 bg-white">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              { title: "Same‑day Dispatch", text: "Order by 3 PM" },
-              { title: "Pro Support", text: "Warranty & spares help" },
-              { title: "Bulk Orders", text: "Volume pricing available" },
-              { title: "Secure Payments", text: "UPI • Cards • Netbanking" },
-            ].map((v) => (
-              <div
-                key={v.title}
-                className="rounded-2xl border border-black/10 bg-black/5 p-4"
-              >
-                <div className="text-sm font-semibold">{v.title}</div>
-                <div className="text-xs text-neutral-600">{v.text}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <OurPartners />
     </main>
   );
 };

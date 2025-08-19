@@ -5,7 +5,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import type { Category } from "../interface/newI";
 import { api } from "../utils/api";
-
+import kalidaPng from "../assets/kalida.png";
 const navClass =
   "text-sm md:text-[15px] tracking-wide px-3 py-2 rounded-xl hover:bg-black/5 transition-colors text-black";
 
@@ -67,12 +67,13 @@ export const Navbar: React.FC<NavbarProps> = () => {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <Link to="/" className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-zinc-700 to-zinc-900" />
-              <span className="font-semibold tracking-wide text-black">
-                Kalida
-              </span>
+              <img
+                src={kalidaPng}
+                alt="Kalida"
+                className="h-15 w-auto object-contain"
+              />
             </Link>
           </div>
 

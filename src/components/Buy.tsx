@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Star, ShoppingCart, CheckCircle } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import type { Product } from "../interface/ProductInterface";
 import { api } from "../utils/api";
 
@@ -216,9 +216,11 @@ const BuyPage: React.FC = () => {
         {/* Details Section */}
         <div className="space-y-6">
           <h1 className="text-3xl font-bold tracking-tight">{product.name}</h1>
-
+          <p className="text-xs text-gray-600 leading-snug line-clamp-2">
+            {product.description}
+          </p>
           {/* Rating & Brand */}
-          <div className="flex items-center gap-4 text-sm text-gray-700">
+          {/* <div className="flex items-center gap-4 text-sm text-gray-700">
             <div className="flex items-center gap-1">
               {[...Array(Math.floor(product.rating || 4))].map((_, i) => (
                 <Star
@@ -232,8 +234,8 @@ const BuyPage: React.FC = () => {
               </span>
             </div>
             <span className="hidden md:inline">•</span>
-            {/* <span>Brand: {product.brand || "Unknown"}</span> */}
-          </div>
+       
+          </div> */}
 
           {/* Price */}
           <div className="text-3xl font-semibold text-black">
@@ -246,7 +248,7 @@ const BuyPage: React.FC = () => {
           </div>
 
           {/* Features */}
-          <ul className="space-y-2 text-sm text-gray-800 mt-4">
+          {/* <ul className="space-y-2 text-sm text-gray-800 mt-4">
             <li className="flex items-start gap-2">
               <CheckCircle size={16} className="text-green-600 mt-0.5" />
               Industrial-grade build quality
@@ -259,7 +261,7 @@ const BuyPage: React.FC = () => {
               <CheckCircle size={16} className="text-green-600 mt-0.5" />
               Ships Pan-India
             </li>
-          </ul>
+          </ul> */}
 
           {/* Actions */}
           <div className="mt-6 flex flex-wrap items-center gap-4">
@@ -301,11 +303,11 @@ const BuyPage: React.FC = () => {
           </div>
 
           {/* Delivery & Policies */}
-          <div className="mt-8 border-t border-gray-300 pt-4 text-sm text-gray-700 space-y-2">
+          {/* <div className="mt-8 border-t border-gray-300 pt-4 text-sm text-gray-700 space-y-2">
             <p>🚚 Free delivery within 2–4 days across India</p>
             <p>🔁 7-day replacement warranty</p>
             <p>🧾 GST invoice available</p>
-          </div>
+          </div> */}
         </div>
       </div>
 
