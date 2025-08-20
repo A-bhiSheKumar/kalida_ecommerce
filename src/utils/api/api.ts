@@ -11,12 +11,14 @@ import type {
 const get = async (
   endpoint: Endpoint,
   headers: Headers,
-  params: Params = {}
+  params: Params = {},
+  options: any = {} // 👈 allow passing extra axios config
 ) => {
   try {
     const response = await axios.get(`${url}/api/${version}/${endpoint}`, {
       headers,
       params,
+      ...options, // 👈 spread options here so responseType works
     });
     const { status } = response;
     if (status === 200) {

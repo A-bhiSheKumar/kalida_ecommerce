@@ -83,18 +83,13 @@ const BuyPage: React.FC = () => {
     }
 
     try {
-      const blobData = await api.product.downloadProductPdf(productId);
+      const blob: Blob = await api.product.downloadProductPdf(productId);
 
-      console.log("Clgblogpdf-->>");
-      const blob = new Blob([blobData], { type: "application/pdf" });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
       a.download = `${product?.name || "product"}.pdf`;
-      a.target = "_blank";
-      document.body.appendChild(a);
       a.click();
-      document.body.removeChild(a);
 
       window.URL.revokeObjectURL(url);
     } catch (error) {

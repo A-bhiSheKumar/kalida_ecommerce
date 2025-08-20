@@ -12,16 +12,17 @@ export const downloadProductPdf = async (query: string) => {
 
     const customHeaders = {
       ...headers,
-
       [AUTHORIZATION.Authorization]: `${AUTHORIZATION.Bearer} ${token}`,
     };
 
-    const response = await get(endpoint, customHeaders);
+    const response = await get(
+      endpoint,
+      customHeaders,
+      {}, // params
+      { responseType: "blob" } // 👈 important
+    );
 
-    if (response?.status === 200) {
-      return response.data;
-    }
-    throw new Error("Failed to download PDF");
+    return response?.data;
   } catch (error) {
     console.error(error);
     throw error;
