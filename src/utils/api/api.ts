@@ -1,6 +1,5 @@
 import axios from "axios";
 import { url, version } from "../../config/config";
-// import { logoutUser } from "../../commanFuntion/logoutUser";
 import type {
   Endpoint,
   Headers,
