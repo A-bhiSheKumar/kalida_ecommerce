@@ -10,12 +10,18 @@ import {
 import Navbar from "./components/Navbar";
 import Home from "./components/Home";
 import Footer from "./components/Footer";
-import CategoryProduct from "./components/CategoryProduct";
+// import CategoryProduct from "./components/CategoryProduct";
 import BuyPage from "./components/Buy";
 import LoginForm from "./components/Login";
 import UserProfile from "./components/UserProfile";
 import AddToCart from "./components/AddToCart";
 import { api } from "./utils/api";
+import WhoWeAre from "./components/WhoWeAre";
+import ContactUs from "./components/ContactUs";
+
+import CategoryList from "./components/CategoryList";
+import CategoryProduct from "./components/CategoryProduct";
+import RandomProducts from "./components/RandomProducts";
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -69,8 +75,12 @@ const App: React.FC = () => {
             }
           />
           <Route path="/" element={<Home />} />
+          <Route path="/about" element={<WhoWeAre />} />
           <Route path="/account" element={<UserProfile />} />
+          <Route path="/contact" element={<ContactUs />} />
+          <Route path="/category" element={<CategoryList />} />
           <Route path="/product" element={<CategoryProduct />} />
+          <Route path="/products" element={<RandomProducts />} />
           <Route path="/productDetails" element={<BuyPage />} />
           <Route path="/addToCart" element={<AddToCart />} />
         </Routes>

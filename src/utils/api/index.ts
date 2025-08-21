@@ -7,6 +7,7 @@ import { deleteCartInProduct } from "./products/deleteCartinProduct";
 import { downloadProductPdf } from "./products/downloadProductPdf";
 import { getCartIems } from "./products/getCartItems";
 import { getProductList } from "./products/getProductsList";
+import { getRandomProductList } from "./products/getRandomProducts";
 import { updateCartQuantity } from "./products/updateCartQuantity";
 import { sendQuotations } from "./quotations/sendQuotations";
 
@@ -26,6 +27,7 @@ export const api = {
     getCartIems: getCartIems,
     deleteCartInProduct: deleteCartInProduct,
     updateCartQuantity: updateCartQuantity,
+    getRandomProductList: getRandomProductList,
   },
   quotation: {
     sendQuotations: sendQuotations,

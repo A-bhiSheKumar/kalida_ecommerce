@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { api } from "../utils/api";
@@ -72,6 +73,43 @@ const AddToCart = () => {
     setTotal(sub);
   };
 
+  // const updateQuantity = async (id: number, change: number) => {
+  //   const token = localStorage.getItem("access_token");
+
+  //   if (!token) {
+  //     // Guest cart update
+  //     const cart = JSON.parse(localStorage.getItem("guest_cart") || "[]");
+  //     const itemIndex = cart.findIndex((item: any) => item.id === id);
+  //     if (itemIndex >= 0) {
+  //       cart[itemIndex].quantity = Math.max(
+  //         1,
+  //         cart[itemIndex].quantity + change
+  //       );
+  //     }
+  //     localStorage.setItem("guest_cart", JSON.stringify(cart));
+  //     setCartItems(cart);
+  //     calculateTotals(cart);
+  //     window.dispatchEvent(new Event("cart-updated"));
+  //     return;
+  //   }
+
+  //   // Logged-in update via API
+  //   const currentItem = cartItems.find((item) => item.id === id);
+  //   if (!currentItem) return;
+
+  //   const newQuantity = Math.max(1, currentItem.quantity + change);
+  //   const response = await api.product.updateCartQuantity(id, {
+  //     quantity: newQuantity,
+  //   });
+  //   if (response) {
+  //     const updatedItems = cartItems.map((item) =>
+  //       item.id === id ? { ...item, quantity: newQuantity } : item
+  //     );
+  //     setCartItems(updatedItems);
+  //     calculateTotals(updatedItems);
+  //     window.dispatchEvent(new Event("cart-updated"));
+  //   }
+  // };
   const updateQuantity = async (id: number, change: number) => {
     const token = localStorage.getItem("access_token");
 
@@ -79,15 +117,28 @@ const AddToCart = () => {
       // Guest cart update
       const cart = JSON.parse(localStorage.getItem("guest_cart") || "[]");
       const itemIndex = cart.findIndex((item: any) => item.id === id);
+
       if (itemIndex >= 0) {
         cart[itemIndex].quantity = Math.max(
           1,
-          cart[itemIndex].quantity + change
+          (cart[itemIndex].quantity || 1) + change
         );
       }
+
       localStorage.setItem("guest_cart", JSON.stringify(cart));
-      setCartItems(cart);
-      calculateTotals(cart);
+
+      // format before setting state
+      const formattedItems = cart.map((item: any) => ({
+        id: item.id,
+        name: item.name,
+        description: item.description,
+        price: parseFloat(item.price || 0),
+        image: item.image || item.images?.[0]?.image || "",
+        quantity: item.quantity || 1,
+      }));
+
+      setCartItems(formattedItems);
+      calculateTotals(formattedItems);
       window.dispatchEvent(new Event("cart-updated"));
       return;
     }
@@ -111,8 +162,31 @@ const AddToCart = () => {
   };
 
   const removeItem = async (id: any) => {
-    const response = await api.product.deleteCartInProduct(id);
+    const token = localStorage.getItem("access_token");
 
+    if (!token) {
+      // Guest cart delete
+      const cart = JSON.parse(localStorage.getItem("guest_cart") || "[]");
+      const updatedCart = cart.filter((item: any) => item.id !== id);
+      localStorage.setItem("guest_cart", JSON.stringify(updatedCart));
+
+      const formattedItems = updatedCart.map((item: any) => ({
+        id: item.id,
+        name: item.name,
+        description: item.description,
+        price: parseFloat(item.price || 0),
+        image: item.image || item.images?.[0]?.image || "",
+        quantity: item.quantity || 1,
+      }));
+
+      setCartItems(formattedItems);
+      calculateTotals(formattedItems);
+      window.dispatchEvent(new Event("cart-updated"));
+      return;
+    }
+
+    // Logged-in API delete
+    const response = await api.product.deleteCartInProduct(id);
     if (response) {
       const updatedItems = cartItems.filter((item) => item.id !== id);
       setCartItems(updatedItems);
@@ -143,12 +217,28 @@ const AddToCart = () => {
     if (guestCart.length === 0) return;
 
     try {
+      // fetch current server cart
+      const serverCart = await api.product.getCartIems();
+      const serverItems = serverCart.items || [];
+
       for (const item of guestCart) {
-        await api.product.addToCart({
-          product: item.id,
-          quantity: item.quantity || 1,
-        });
+        const existing = serverItems.find((s: any) => s.id === item.id);
+
+        if (existing) {
+          // If already in server, update the quantity to match guest cart
+          await api.product.updateCartQuantity(item.id, {
+            quantity: item.quantity || 1,
+          });
+        } else {
+          // If not in server, add fresh
+          await api.product.addToCart({
+            product: item.id,
+            quantity: item.quantity || 1,
+          });
+        }
       }
+
+      // clear guest cart after syncing
       localStorage.removeItem("guest_cart");
       window.dispatchEvent(new Event("cart-updated"));
     } catch (err) {
@@ -202,7 +292,7 @@ const AddToCart = () => {
                 Browse our products to add items to your cart
               </p>
               <button className="bg-black text-white px-6 py-2 rounded-md hover:bg-gray-800 transition">
-                <a href="/">Continue Shopping</a>
+                <a href="/products">Continue Shopping</a>
               </button>
             </div>
           ) : (

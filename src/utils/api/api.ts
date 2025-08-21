@@ -7,6 +7,7 @@ import type {
   Params,
   Payload,
 } from "../../types/api/api.types";
+import { logoutUser } from "../funtions/logoutUser";
 
 const get = async (
   endpoint: Endpoint,
@@ -26,7 +27,7 @@ const get = async (
     }
   } catch (error: any) {
     if (error.response?.status === 401) {
-      // logoutUser();
+      logoutUser();
     }
     console.log("error", error);
     throw error;
@@ -48,7 +49,7 @@ const post = async (endpoint: Endpoint, payload: Payload, headers: Headers) => {
     }
   } catch (error: any) {
     if (error.response?.status === 401) {
-      // logoutUser();
+      logoutUser();
     }
     console.log("error", error);
     throw error;
@@ -70,7 +71,7 @@ const put = async (endpoint: Endpoint, payload: Payload, headers: Headers) => {
     }
   } catch (error: any) {
     if (error.response?.status === 401) {
-      // logoutUser();
+      logoutUser();
     }
     console.log("error", error);
     throw error;
@@ -96,7 +97,7 @@ const patch = async (
     }
   } catch (error: any) {
     if (error.response?.status === 401) {
-      // logoutUser();
+      logoutUser();
     }
     console.log("error", error);
     throw error;

@@ -1,11 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Search, ShoppingCart, User } from "lucide-react";
+import { ShoppingCart, User } from "lucide-react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import type { Category } from "../interface/newI";
 import { api } from "../utils/api";
 import kalidaPng from "../assets/kalida.png";
+
 const navClass =
   "text-sm md:text-[15px] tracking-wide px-3 py-2 rounded-xl hover:bg-black/5 transition-colors text-black";
 
@@ -14,7 +16,6 @@ type NavbarProps = {
 };
 
 export const Navbar: React.FC<NavbarProps> = () => {
-  const [q, setQ] = useState("");
   const [cartCount, setCartCount] = useState(0);
   const [isLogin, setIsLogin] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -72,34 +73,26 @@ export const Navbar: React.FC<NavbarProps> = () => {
               <img
                 src={kalidaPng}
                 alt="Kalida"
-                className="h-15 w-auto object-contain"
+                className="h-12 w-auto object-contain"
               />
             </Link>
           </div>
 
-          {/* Search */}
-          <div className="hidden md:flex md:flex-1 md:justify-center">
-            <div className="group relative w-full max-w-xl">
-              <Search
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-black"
-                size={18}
-              />
-              <input
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-                placeholder="Search tools, SKUs, brands..."
-                className="w-full rounded-2xl border border-black/10 bg-black/5 pl-10 pr-12 py-2 text-sm outline-none placeholder:text-neutral-500 text-black focus:ring-2 focus:ring-black/20"
-              />
-              {q && (
-                <button
-                  onClick={() => setQ("")}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg px-2 py-1 text-xs text-neutral-500 hover:bg-black/10"
-                >
-                  Clear
-                </button>
-              )}
-            </div>
-          </div>
+          {/* Middle Navbar Links */}
+          <nav className="hidden md:flex md:gap-6">
+            <Link to="/about" className={navClass}>
+              About Us
+            </Link>
+            <Link to="/category" className={navClass}>
+              Category
+            </Link>
+            <Link to="/products" className={navClass}>
+              Products
+            </Link>
+            <Link to="/contact" className={navClass}>
+              Contact Us
+            </Link>
+          </nav>
 
           {/* Right Actions */}
           <div className="flex items-center gap-2">
