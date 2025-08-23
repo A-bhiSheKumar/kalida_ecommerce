@@ -447,7 +447,7 @@ const AddToCart = () => {
 
                 <div className="mt-4 text-sm text-center text-gray-500">
                   or{" "}
-                  <a href="/" className="text-gray-900 hover:underline">
+                  <a href="/products" className="text-gray-900 hover:underline">
                     Continue Shopping
                   </a>
                 </div>

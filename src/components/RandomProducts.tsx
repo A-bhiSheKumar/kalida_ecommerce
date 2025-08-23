@@ -16,6 +16,9 @@ const RandomProducts = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
+  // Loader state
+  const [loading, setLoading] = useState(true);
+
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 4;
@@ -23,12 +26,15 @@ const RandomProducts = () => {
   // Fetch all random products (initial load)
   const fetchProducts = useCallback(async () => {
     try {
+      setLoading(true);
       const response = await api.product.getRandomProductList();
       if (response?.results) {
         setProducts(response.results);
       }
     } catch (error) {
       console.error("Error fetching random products:", error);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
@@ -36,6 +42,7 @@ const RandomProducts = () => {
   const fetchProductsByCategoryname = useCallback(
     async (categoryName: string) => {
       try {
+        setLoading(true);
         if (categoryName === "all") {
           await fetchProducts();
         } else {
@@ -49,6 +56,8 @@ const RandomProducts = () => {
         setCurrentPage(1); // reset pagination on category change
       } catch (error) {
         console.error("Error fetching products by category:", error);
+      } finally {
+        setLoading(false);
       }
     },
     [fetchProducts]
@@ -111,7 +120,12 @@ const RandomProducts = () => {
 
           {/* Products Grid */}
           <div className="sm:col-span-3 lg:col-span-4">
-            {currentProducts.length > 0 ? (
+            {loading ? (
+              // Loader (Skeleton / Spinner)
+              <div className="flex justify-center items-center py-20">
+                <div className="animate-spin rounded-full h-10 w-10 border-4 border-gray-300 border-t-black"></div>
+              </div>
+            ) : currentProducts.length > 0 ? (
               <>
                 <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                   {currentProducts.map((product) => {
