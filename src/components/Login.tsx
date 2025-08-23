@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../utils/api";
 import toast from "react-hot-toast";
-
+import loginImg from "../assets/loginimage.png";
 const LoginForm = () => {
   const [isSignup, setIsSignup] = useState(false);
   const [username, setUsername] = useState("");
@@ -91,17 +91,10 @@ const LoginForm = () => {
       <div className="w-1/2 hidden md:flex items-center justify-center relative p-2 bg-white">
         <div className="relative w-full h-full rounded-3xl overflow-hidden shadow-lg">
           <img
-            src="https://images.unsplash.com/photo-1668874184010-87aa286683dd?q=80&w=1287&auto=format&fit=crop"
+            src={loginImg}
             alt="Background"
             className="absolute inset-0 w-full h-full object-cover"
           />
-          <div className="relative z-10 text-black text-center px-8 py-10 backdrop-brightness-95 bg-white/60">
-            <h1 className="text-3xl font-semibold">Our Organisation</h1>
-            <p className="text-xl mt-2">Anything you can Imagine</p>
-            <p className="text-sm mt-1 text-gray-700">
-              Generate any type of art with Openartistic
-            </p>
-          </div>
         </div>
       </div>
 

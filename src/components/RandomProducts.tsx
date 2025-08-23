@@ -2,8 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { api } from "../utils/api";
 import { Link } from "react-router-dom";
 import type { IProduct } from "../interface/newI";
-import { Filter } from "lucide-react";
-import CategoryFilter from "../shared/CategoryFilter";
+import { Filter, X } from "lucide-react";
 
 interface Category {
   id: string;
@@ -16,14 +15,18 @@ const RandomProducts = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
 
+  const [selectedPrice, setSelectedPrice] = useState<string>("all");
+
   // Loader state
   const [loading, setLoading] = useState(true);
 
-  // Pagination states
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 4;
+  // Sort state
+  const [sortOption, setSortOption] = useState("default");
 
-  // Fetch all random products (initial load)
+  // "See More" state
+  const [visibleCount, setVisibleCount] = useState(8);
+
+  // Fetch all products
   const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
@@ -32,36 +35,11 @@ const RandomProducts = () => {
         setProducts(response);
       }
     } catch (error) {
-      console.error("Error fetching random products:", error);
+      console.error("Error fetching products:", error);
     } finally {
       setLoading(false);
     }
   }, []);
-
-  // Fetch products by category (using API)
-  const fetchProductsByCategoryname = useCallback(
-    async (categoryName: string) => {
-      try {
-        setLoading(true);
-        if (categoryName === "all") {
-          await fetchProducts();
-        } else {
-          const response = await api.product.getProductList(categoryName);
-          if (response) {
-            setProducts(response);
-          } else {
-            setProducts([]);
-          }
-        }
-        setCurrentPage(1); // reset pagination on category change
-      } catch (error) {
-        console.error("Error fetching products by category:", error);
-      } finally {
-        setLoading(false);
-      }
-    },
-    [fetchProducts]
-  );
 
   // Fetch categories
   const fetchCategories = useCallback(async () => {
@@ -75,22 +53,54 @@ const RandomProducts = () => {
     }
   }, []);
 
-  // Initial load: products + categories
   useEffect(() => {
     fetchProducts();
     fetchCategories();
   }, [fetchProducts, fetchCategories]);
 
-  // Whenever category changes → fetch from API
-  useEffect(() => {
-    fetchProductsByCategoryname(selectedCategory);
-  }, [selectedCategory, fetchProductsByCategoryname]);
+  // Sorting
+  const sortProducts = (products: IProduct[]) => {
+    switch (sortOption) {
+      case "price-asc":
+        return [...products].sort((a, b) => a.price - b.price);
 
-  // Pagination logic
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentProducts = products.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(products.length / itemsPerPage);
+      case "price-desc":
+        return [...products].sort((a, b) => b.price - a.price);
+
+      case "name-asc":
+        return [...products].sort((a, b) => a.name.localeCompare(b.name, "en"));
+
+      case "name-desc":
+        return [...products].sort((a, b) => b.name.localeCompare(a.name, "en"));
+
+      default:
+        return products;
+    }
+  };
+
+  // Filtering
+  const filterProducts = (products: IProduct[]) => {
+    return products.filter((p) => {
+      let match = true;
+
+      if (selectedCategory !== "all" && p.category?.name !== selectedCategory) {
+        match = false;
+      }
+
+      if (selectedPrice !== "all") {
+        const price = p.price; // already a number
+
+        if (selectedPrice === "lt100" && price >= 100) match = false;
+        if (selectedPrice === "100-200" && (price < 100 || price > 200))
+          match = false;
+        if (selectedPrice === "gt200" && price <= 200) match = false;
+      }
+
+      return match;
+    });
+  };
+
+  const finalProducts = sortProducts(filterProducts(products));
 
   return (
     <section className="border-t border-black/10 bg-white py-12">
@@ -98,147 +108,218 @@ const RandomProducts = () => {
         {/* Section Heading */}
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-gray-900">
-            Featured Products
+            Ceramics & Porcelain
           </h2>
-          {/* Mobile Filter Button */}
-          <button
-            className="sm:hidden flex items-center gap-2 px-3 py-2 border rounded-lg text-sm"
-            onClick={() => setMobileFilterOpen(!mobileFilterOpen)}
-          >
-            <Filter className="w-4 h-4" /> Filter
-          </button>
-        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-4 lg:grid-cols-5 gap-8">
-          {/* Category Filter Sidebar */}
-          <CategoryFilter
-            categories={categories}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-            mobileOpen={mobileFilterOpen}
-          />
+          {/* Right Controls */}
+          <div className="flex items-center gap-3">
+            {/* Filter Button */}
+            <button
+              className="flex items-center gap-2 px-3 py-2 border rounded-lg text-sm"
+              onClick={() => setMobileFilterOpen(true)}
+            >
+              <Filter className="w-4 h-4" /> Filter
+            </button>
 
-          {/* Products Grid */}
-          <div className="sm:col-span-3 lg:col-span-4">
-            {loading ? (
-              // Loader (Skeleton / Spinner)
-              <div className="flex justify-center items-center py-20">
-                <div className="animate-spin rounded-full h-10 w-10 border-4 border-gray-300 border-t-black"></div>
-              </div>
-            ) : currentProducts.length > 0 ? (
-              <>
-                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                  {currentProducts.map((product) => {
-                    const mainImage =
-                      product.images?.find((img) => img.is_main)?.image ||
-                      product.images?.[0]?.image ||
-                      "https://via.placeholder.com/300x300.png?text=No+Image";
-
-                    return (
-                      <div
-                        key={product.id}
-                        className="group border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 bg-white"
-                      >
-                        {/* Product Image */}
-                        <Link
-                          to={`/productDetails?product_id=${product.id}`}
-                          state={{ product }}
-                        >
-                          <div className="aspect-square w-full overflow-hidden bg-gray-50">
-                            <img
-                              src={mainImage}
-                              alt={product.name}
-                              className="h-full w-full object-contain p-4 group-hover:scale-105 transition-transform duration-300"
-                            />
-                          </div>
-                        </Link>
-
-                        {/* Product Info */}
-                        <div className="p-4">
-                          <Link to={`/product/${product.slug}`}>
-                            <h3 className="text-sm font-medium text-gray-900 group-hover:text-black/80 line-clamp-1">
-                              {product.name}
-                            </h3>
-                          </Link>
-                          <p className="text-xs text-gray-500 mt-1">
-                            {product.category?.name}
-                          </p>
-
-                          {/* Price */}
-                          <div className="mt-2 flex items-center gap-2">
-                            {product.is_on_sale ? (
-                              <>
-                                <span className="text-red-600 font-semibold text-sm">
-                                  {product.current_price} SAR
-                                </span>
-                                <span className="text-gray-400 line-through text-xs">
-                                  {product.price} SAR
-                                </span>
-                              </>
-                            ) : (
-                              <span className="text-gray-800 font-semibold text-sm">
-                                {product.price} SAR
-                              </span>
-                            )}
-                          </div>
-
-                          {/* CTA Button */}
-                          <Link
-                            to={`/productDetails?product_id=${product.id}`}
-                            state={{ product }}
-                            className="mt-3 inline-block w-full text-center rounded-lg bg-black text-white py-2 text-xs font-medium hover:bg-gray-800 transition-colors"
-                          >
-                            View Details
-                          </Link>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* Pagination */}
-                <div className="flex justify-end mt-6">
-                  <div className="inline-flex items-center gap-2">
-                    <button
-                      disabled={currentPage === 1}
-                      onClick={() => setCurrentPage((prev) => prev - 1)}
-                      className="px-3 py-1 border rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
-                    >
-                      Prev
-                    </button>
-
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                      (page) => (
-                        <button
-                          key={page}
-                          onClick={() => setCurrentPage(page)}
-                          className={`px-3 py-1 rounded-lg text-sm ${
-                            currentPage === page
-                              ? "bg-black text-white"
-                              : "border hover:bg-gray-100"
-                          }`}
-                        >
-                          {page}
-                        </button>
-                      )
-                    )}
-
-                    <button
-                      disabled={currentPage === totalPages}
-                      onClick={() => setCurrentPage((prev) => prev + 1)}
-                      className="px-3 py-1 border rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100"
-                    >
-                      Next
-                    </button>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <p className="text-gray-500">No products available right now.</p>
-            )}
+            {/* Sort Dropdown */}
+            <select
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value)}
+              className="border rounded-lg px-3 py-2 text-sm"
+            >
+              <option value="default">Sort By</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              <option value="name-asc">Name: A → Z</option>
+              <option value="name-desc">Name: Z → A</option>
+            </select>
           </div>
         </div>
+
+        {/* Products Grid */}
+        <div>
+          {loading ? (
+            <div className="flex justify-center items-center py-20">
+              <div className="animate-spin rounded-full h-10 w-10 border-4 border-gray-300 border-t-black"></div>
+            </div>
+          ) : finalProducts.length > 0 ? (
+            <>
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {finalProducts.slice(0, visibleCount).map((product) => {
+                  const mainImage =
+                    product.images?.find((img) => img.is_main)?.image ||
+                    product.images?.[0]?.image ||
+                    "https://via.placeholder.com/300x300.png?text=No+Image";
+
+                  return (
+                    <div
+                      key={product.id}
+                      className="group border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 bg-white"
+                    >
+                      {/* Product Image */}
+                      <Link
+                        to={`/productDetails?product_id=${product.id}`}
+                        state={{ product }}
+                      >
+                        <div className="aspect-square w-full overflow-hidden bg-gray-50">
+                          <img
+                            src={mainImage}
+                            alt={product.name}
+                            className="h-full w-full object-contain p-4 group-hover:scale-105 transition-transform duration-300"
+                          />
+                        </div>
+                      </Link>
+
+                      {/* Product Info */}
+                      <div className="p-4">
+                        <h3 className="text-sm font-medium text-gray-900 line-clamp-1">
+                          {product.name}
+                        </h3>
+                        <p className="text-xs text-gray-500 mt-1">
+                          Sold by the carton
+                        </p>
+
+                        {/* Price */}
+                        <div className="mt-2 flex items-center gap-2">
+                          {product.is_on_sale ? (
+                            <>
+                              <span className="text-red-600 font-semibold text-sm">
+                                {product.current_price} SAR
+                              </span>
+                              <span className="text-gray-400 line-through text-xs">
+                                {product.price} SAR
+                              </span>
+                            </>
+                          ) : (
+                            <span className="text-gray-800 font-semibold text-sm">
+                              {product.price} SAR
+                            </span>
+                          )}
+                        </div>
+
+                        {/* CTA Button */}
+                        <button className="mt-3 w-full text-center rounded-lg bg-sky-500 text-white py-2 text-sm font-medium hover:bg-sky-600 transition-colors">
+                          Add to cart
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* See More Button */}
+              {visibleCount < finalProducts.length && (
+                <div className="flex justify-center mt-8">
+                  <button
+                    onClick={() => setVisibleCount(visibleCount + 8)}
+                    className="px-6 py-2 text-white text-sm font-medium rounded-lg 
+             bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 
+             shadow-md hover:from-blue-600 hover:via-blue-700 hover:to-blue-800 
+             transition-all duration-300 transform hover:scale-105"
+                  >
+                    See More
+                  </button>
+                </div>
+              )}
+            </>
+          ) : (
+            <p className="text-gray-500">No products available right now.</p>
+          )}
+        </div>
       </div>
+
+      {/* Filter Drawer */}
+      {mobileFilterOpen && (
+        <div className="fixed inset-0 z-50 flex">
+          {/* Overlay */}
+          <div
+            className="fixed inset-0 bg-black/40 z-40"
+            onClick={() => setMobileFilterOpen(false)}
+          ></div>
+
+          {/* Drawer */}
+          <div className="ml-auto h-full w-80 bg-white shadow-xl overflow-y-auto p-6 z-50 relative">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-lg font-bold">Filters</h3>
+              <button onClick={() => setMobileFilterOpen(false)}>
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Categories */}
+            <div className="mb-6">
+              <h4 className="font-semibold mb-2">Categories</h4>
+              <label className="flex items-center gap-2 mb-2">
+                <input
+                  type="radio"
+                  name="category"
+                  value="all"
+                  checked={selectedCategory === "all"}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                />
+                <span>All</span>
+              </label>
+              {categories.map((cat) => (
+                <label key={cat.id} className="flex items-center gap-2 mb-2">
+                  <input
+                    type="radio"
+                    name="category"
+                    value={cat.name}
+                    checked={selectedCategory === cat.name}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                  />
+                  <span>{cat.name}</span>
+                </label>
+              ))}
+            </div>
+
+            {/* Price */}
+            <div className="mb-6">
+              <h4 className="font-semibold mb-2">Price</h4>
+              <label className="flex items-center gap-2 mb-2">
+                <input
+                  type="radio"
+                  name="price"
+                  value="all"
+                  checked={selectedPrice === "all"}
+                  onChange={(e) => setSelectedPrice(e.target.value)}
+                />
+                <span>All</span>
+              </label>
+              <label className="flex items-center gap-2 mb-2">
+                <input
+                  type="radio"
+                  name="price"
+                  value="lt100"
+                  checked={selectedPrice === "lt100"}
+                  onChange={(e) => setSelectedPrice(e.target.value)}
+                />
+                <span>Less than 100 SAR</span>
+              </label>
+              <label className="flex items-center gap-2 mb-2">
+                <input
+                  type="radio"
+                  name="price"
+                  value="100-200"
+                  checked={selectedPrice === "100-200"}
+                  onChange={(e) => setSelectedPrice(e.target.value)}
+                />
+                <span>100 SAR to 200 SAR</span>
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="price"
+                  value="gt200"
+                  checked={selectedPrice === "gt200"}
+                  onChange={(e) => setSelectedPrice(e.target.value)}
+                />
+                <span>More than 200 SAR</span>
+              </label>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
