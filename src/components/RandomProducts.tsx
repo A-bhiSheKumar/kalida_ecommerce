@@ -27,9 +27,9 @@ const RandomProducts = () => {
   const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await api.product.getRandomProductList();
-      if (response?.results) {
-        setProducts(response.results);
+      const response = await api.product.getAllProducts();
+      if (response) {
+        setProducts(response);
       }
     } catch (error) {
       console.error("Error fetching random products:", error);

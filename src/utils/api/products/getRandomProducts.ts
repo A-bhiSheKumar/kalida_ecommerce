@@ -5,9 +5,9 @@ const { get } = request;
 
 const initialRoute = "products";
 
-export const getRandomProductList = async () => {
+export const getAllProducts = async () => {
   try {
-    const endpoint = `${initialRoute}/random`;
+    const endpoint = `${initialRoute}/all-products/`;
 
     //const token = localStorage.getItem("access_token");
     const response = await get(endpoint, {
