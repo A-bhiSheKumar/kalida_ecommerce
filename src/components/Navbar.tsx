@@ -64,7 +64,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
   }, [fetchCartItems]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-black/10 bg-white text-black">
+    <header className="sticky top-0 z-50 border-b border-black/10 bg-gradient-to-r from-blue-50 via-white to-blue-200 text-black shadow-sm">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
@@ -100,7 +100,7 @@ export const Navbar: React.FC<NavbarProps> = () => {
             {!isLogin ? (
               <button
                 onClick={() => navigate("/login")}
-                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
+                className="bg-blue-400 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
               >
                 Login
               </button>
