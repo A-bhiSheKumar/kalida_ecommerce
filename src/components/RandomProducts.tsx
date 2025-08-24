@@ -13,14 +13,14 @@ interface Category {
 const RandomProducts = () => {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   // add new state
 
   const [addingToCartId, setAddingToCartId] = useState<number | null>(null);
 
-  const [selectedPrice, setSelectedPrice] = useState<string>("all");
+  const [selectedPrice, setSelectedPrice] = useState<string>("All");
 
   // Loader state
   const [loading, setLoading] = useState(true);
@@ -31,7 +31,7 @@ const RandomProducts = () => {
   // "See More" state
   const [visibleCount, setVisibleCount] = useState(8);
 
-  // Fetch all products
+  // Fetch All products
   const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
@@ -88,11 +88,11 @@ const RandomProducts = () => {
     return products.filter((p) => {
       let match = true;
 
-      if (selectedCategory !== "all" && p.category?.name !== selectedCategory) {
+      if (selectedCategory !== "All" && p.category?.name !== selectedCategory) {
         match = false;
       }
 
-      if (selectedPrice !== "all") {
+      if (selectedPrice !== "All") {
         const price = p.price; // already a number
 
         if (selectedPrice === "lt100" && price >= 100) match = false;
@@ -174,7 +174,7 @@ const RandomProducts = () => {
           {/* Section Heading */}
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-gray-900">
-              Ceramics & Porcelain
+              {selectedCategory}
             </h2>
 
             {/* Right Controls */}
@@ -220,7 +220,7 @@ const RandomProducts = () => {
                     return (
                       <div
                         key={product.id}
-                        className="group border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 bg-white"
+                        className="group border border-gray-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-All duration-300 bg-white"
                       >
                         {/* Product Image */}
                         <Link
@@ -292,7 +292,7 @@ const RandomProducts = () => {
                       className="px-6 py-2 text-white text-sm font-medium rounded-lg 
              bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 
              shadow-md hover:from-blue-600 hover:via-blue-700 hover:to-blue-800 
-             transition-all duration-300 transform hover:scale-105"
+             transition-All duration-300 transform hover:scale-105"
                     >
                       See More
                     </button>
@@ -330,8 +330,8 @@ const RandomProducts = () => {
                   <input
                     type="radio"
                     name="category"
-                    value="all"
-                    checked={selectedCategory === "all"}
+                    value="All"
+                    checked={selectedCategory === "All"}
                     onChange={(e) => setSelectedCategory(e.target.value)}
                   />
                   <span>All</span>
@@ -357,8 +357,8 @@ const RandomProducts = () => {
                   <input
                     type="radio"
                     name="price"
-                    value="all"
-                    checked={selectedPrice === "all"}
+                    value="All"
+                    checked={selectedPrice === "All"}
                     onChange={(e) => setSelectedPrice(e.target.value)}
                   />
                   <span>All</span>
