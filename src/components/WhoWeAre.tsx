@@ -1,3 +1,4 @@
+import aboutImg from "../assets/aboutimg.png";
 const WhoWeAre = () => {
   return (
     <section className="text-black w-full py-16 px-6 md:px-20">
@@ -22,9 +23,9 @@ const WhoWeAre = () => {
         {/* Right Side (Optional Image or Illustration) */}
         <div className="md:w-1/2 mt-10 md:mt-0 flex justify-center">
           <img
-            src="https://images.unsplash.com/photo-1482731215275-a1f151646268?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            src={aboutImg}
             alt="Who We Are"
-            className="rounded-2xl shadow-lg w-full max-w-md h-80 object-cover"
+            className="rounded-2xl shadow-lg w-full max-w-lg h-110 object-cover"
           />
         </div>
       </div>
