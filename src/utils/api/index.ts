@@ -2,6 +2,7 @@ import { fetchLoginUser, login } from "./auth/login";
 import { register } from "./auth/register";
 
 import { getCategoryList } from "./categories/getCategory";
+import { contact } from "./contact/contact";
 import { addToCart } from "./products/addToCart";
 import { deleteCartInProduct } from "./products/deleteCartinProduct";
 import { downloadProductPdf } from "./products/downloadProductPdf";
@@ -31,5 +32,8 @@ export const api = {
   },
   quotation: {
     sendQuotations: sendQuotations,
+  },
+  contact: {
+    contact: contact,
   },
 };
