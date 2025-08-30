@@ -10,7 +10,7 @@ export const contact = async (payload: Payload) => {
   try {
     const endpoint = `${initialRoute}/`;
     // const token = localStorage.getItem("access_token");
-
+    //
     // Check if payload is FormData and remove Content-Type if true
     const customHeaders = {
       ...headers,

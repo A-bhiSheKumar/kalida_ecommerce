@@ -42,7 +42,7 @@ const ContactUs: React.FC = () => {
       setNote("");
     } catch (err) {
       console.error("Error submitting form:", err);
-      setError("❌ Failed to send message. Please try again.");
+      setError("❌ Failed to send message.");
     } finally {
       setLoading(false);
     }
