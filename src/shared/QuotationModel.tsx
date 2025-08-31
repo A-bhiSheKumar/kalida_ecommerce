@@ -54,7 +54,7 @@ const QuotationModel: React.FC<QuotationModelProps> = ({
                   <div className="flex-1">
                     <p className="font-medium">{item.product_name}</p>
                     <p className="text-sm text-gray-500">
-                      Qty: {item.quantity} × ₹{item.price}
+                      Qty: {item.quantity} SAR {item.price}
                     </p>
                   </div>
                 </div>

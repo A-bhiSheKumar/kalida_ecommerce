@@ -7,12 +7,12 @@ import type { Product } from "../interface/ProductInterface";
 import { api } from "../utils/api";
 import AlertModal from "../shared/AlertModel";
 
-// Helper to format INR
-const priceINR = (v: number | string) =>
-  new Intl.NumberFormat("en-IN", {
+// Helper to format SAR
+const priceSAR = (v: number | string) =>
+  new Intl.NumberFormat("en-SA", {
     style: "currency",
-    currency: "INR",
-    maximumFractionDigits: 0,
+    currency: "SAR",
+    maximumFractionDigits: 2, // SAR usually shows 2 decimals
   }).format(Number(v));
 
 // Fallback image object type
@@ -242,12 +242,11 @@ const BuyPage: React.FC = () => {
        
           </div> */}
 
-            {/* Price */}
             <div className="text-3xl font-semibold text-black">
-              {priceINR(displayPrice)}
+              {priceSAR(displayPrice)}
               {product.price && product.price !== displayPrice && (
                 <span className="ml-3 text-xl line-through text-gray-500">
-                  {priceINR(product.price)}
+                  {priceSAR(product.price)}
                 </span>
               )}
             </div>

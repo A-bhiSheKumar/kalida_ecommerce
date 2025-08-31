@@ -242,7 +242,7 @@ const RandomProducts = () => {
                             {product.name}
                           </h3>
                           <p className="text-xs text-gray-500 mt-1">
-                            Sold by the carton
+                            {product.description}
                           </p>
 
                           {/* Price */}

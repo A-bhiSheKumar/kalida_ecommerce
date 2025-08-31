@@ -370,7 +370,7 @@ const AddToCart = () => {
                           </button>
                         </div>
                         <p className="text-lg font-semibold text-gray-900">
-                          ${(item.price * item.quantity).toFixed(2)}
+                          SAR {(item.price * item.quantity).toFixed(2)}
                         </p>
                       </div>
                     </div>
@@ -387,21 +387,23 @@ const AddToCart = () => {
                 <div className="space-y-4">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Subtotal</span>
-                    <span className="font-medium">${subtotal.toFixed(2)}</span>
+                    <span className="font-medium">
+                      SAR {subtotal.toFixed(2)}
+                    </span>
                   </div>
 
                   <div className="border-t border-gray-200 pt-4 mt-2">
                     <div className="flex justify-between">
                       <span className="text-gray-900 font-bold">Total</span>
                       <span className="text-gray-900 font-bold">
-                        ${total.toFixed(2)}
+                        SAR {total.toFixed(2)}
                       </span>
                     </div>
                   </div>
                 </div>
 
                 <button
-                  className={`w-full bg-black text-white py-3 mt-6 rounded-md transition font-medium flex items-center justify-center ${
+                  className={`w-full bg-black text-white py-3 mt-6 rounded-md transition font-medium flex items-center justify-center SAR{
                     isSending
                       ? "opacity-70 cursor-not-allowed"
                       : "hover:bg-gray-800"
