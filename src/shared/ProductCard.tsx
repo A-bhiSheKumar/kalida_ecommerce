@@ -129,9 +129,9 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
                 )}
               </div>
 
-              <div className="text-xs text-green-600 font-medium mt-1">
+              {/* <div className="text-xs text-green-600 font-medium mt-1">
                 Free delivery
-              </div>
+              </div> */}
             </div>
           </div>
         </Link>
