@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 import { Star, ShoppingCart, Heart, Eye } from "lucide-react";
 import type { Product } from "../interface/ProductInterface";
 
-const priceINR = (v: number | string) =>
-  new Intl.NumberFormat("en-IN", {
+const priceSAR = (v: number | string) =>
+  new Intl.NumberFormat("en-SA", {
     style: "currency",
-    currency: "INR",
-    maximumFractionDigits: 0,
+    currency: "SAR",
+    maximumFractionDigits: 2, // SAR usually shows 2 decimals
   }).format(Number(v));
 
 const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
@@ -120,11 +120,11 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
             <div className="mt-auto">
               <div className="flex items-center gap-2">
                 <span className="text-lg font-bold text-gray-900">
-                  {priceINR(displayPrice)}
+                  {priceSAR(displayPrice)}
                 </span>
                 {product.price && product.price !== displayPrice && (
                   <span className="text-sm text-gray-500 line-through">
-                    {priceINR(product.price)}
+                    {priceSAR(product.price)}
                   </span>
                 )}
               </div>
